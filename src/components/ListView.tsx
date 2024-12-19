@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { pdfType } from "../types/pdf";
+import { Link } from "react-router-dom";
 
 export default function ListView({ pdfs }: { pdfs: pdfType[] }) {
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -16,8 +17,8 @@ export default function ListView({ pdfs }: { pdfs: pdfType[] }) {
                         <div key={pdf.id}>
                             <p>{pdf.author}</p>
                             <p>{pdf.name}</p>
-                            <p>{pdf.link}</p>
-                            <p>{pdf.published}</p>
+                            <p>{pdf.published}</p>'
+                            <Link to={`pdf/${pdf.id}`}>Read More</Link>
                         </div>
                     ))
                 }
