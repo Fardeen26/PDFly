@@ -1,33 +1,35 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import axios from 'axios'
+import { useEffect, useState } from 'react';
+import { pdfType } from './types/pdf';
+import ListContainer from './components/ListContainer';
+import PdfView from './components/PdfView';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [pdfs, setPdfs] = useState<pdfType[]>([]);
+  const [error, setError] = useState<string>();
+
+  useEffect(() => {
+    axios.get('https://api.npoint.io/dee51ea017d20efdfcc8')
+      .then((response) => {
+        const pdfsWithIds = response.data.map((pdf: Omit<pdfType, "id">, index: number) => ({
+          ...pdf,
+          id: `${index + 1}`,
+        }));
+        setPdfs(pdfsWithIds);
+      })
+      .catch(error => setError(`${error}`));
+  }, []);
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Router>
+        <Routes>
+          <Route path="/" element={<ListContainer pdfs={pdfs} />} />
+          <Route path="/pdf/:id" element={<PdfView pdfs={pdfs} />} />
+        </Routes>
+        {error && <div className="error">{error}</div>}
+      </Router>
     </>
   )
 }
