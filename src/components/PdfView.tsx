@@ -4,28 +4,24 @@ import { pdfType } from "../types/pdf";
 export default function PdfView({ pdfs }: { pdfs: pdfType[] }) {
     const { id } = useParams();
     if (!id) {
-        return <div>PDF not found</div>;
+        return <p>PDF not found. Please check the URL.</p>;
     }
-    const decodedName = decodeURIComponent(id);
-    const selectedPdf = pdfs.find(pdf => pdf.id === decodedName);
+
+    const selectedPdf = pdfs.find(pdf => pdf.id === id);
+
+    if (!selectedPdf) {
+        return <p>PDF not found. It might have been removed or the ID is incorrect.</p>;
+    }
+
     return (
-        <>
-            {
-                selectedPdf ? (
-                    <div>
-                        <h2>{selectedPdf.name}</h2>
-                        <p>Author: {selectedPdf.author}</p>
-                        <iframe
-                            src={selectedPdf.link}
-                            title={selectedPdf.name}
-                            style={{ width: '95vw' }}
-                            height="600px"
-                        ></iframe>
-                    </div>
-                ) : (
-                    <p>PDF not found</p>
-                )
-            }
-        </>
-    )
+        <section className="flex justify-center">
+            <iframe
+                src={selectedPdf.link}
+                title={selectedPdf.name}
+                style={{ width: '99vw' }}
+                height="700px"
+                aria-label={`PDF Viewer for ${selectedPdf.name}`}
+            ></iframe>
+        </section>
+    );
 }

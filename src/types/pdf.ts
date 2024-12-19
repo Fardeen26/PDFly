@@ -3,5 +3,6 @@ export interface pdfType {
     author: string,
     name: string,
     published: string,
-    link: string
+    link: string,
+    thumbnail: string | null
 }
